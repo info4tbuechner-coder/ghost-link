@@ -1,0 +1,5 @@
+{
+  "name": "GhostLink",
+  "description": "Secure, self-destructing one-time message service.",
+  "requestFramePermissions": []
+}

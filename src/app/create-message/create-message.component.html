@@ -1,0 +1,113 @@
+<div class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+  
+  <!-- Header -->
+  <header class="mb-12 text-center animate-fade-in-down">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/20 border border-emerald-500/20 mb-6 shadow-lg shadow-emerald-900/20">
+      <mat-icon class="!w-8 !h-8 !text-[32px] text-emerald-400">lock</mat-icon>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight mb-3">
+      Ghost<span class="text-emerald-400">Link</span>
+    </h1>
+    <p class="text-slate-400 text-lg max-w-md mx-auto leading-relaxed">
+      Secure, ephemeral messaging. <br class="hidden sm:block"/>Encrypted on your device, destroyed on read.
+    </p>
+  </header>
+
+  <!-- Main Card -->
+  <main class="w-full max-w-2xl glass-panel rounded-3xl p-1 shadow-2xl ring-1 ring-white/10 animate-fade-in-up">
+    <div class="bg-slate-950/40 rounded-[20px] p-6 sm:p-8 md:p-10">
+      
+      @if (!generatedLink()) {
+        <form [formGroup]="messageForm" (ngSubmit)="createLink()" class="flex flex-col gap-8">
+          
+          <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
+            <div class="relative bg-slate-900 rounded-xl p-1">
+              <mat-form-field appearance="outline" class="w-full !mb-0">
+                <mat-label>Secret Message</mat-label>
+                <textarea matInput 
+                          formControlName="message" 
+                          rows="6" 
+                          placeholder="Type your sensitive message here..."
+                          cdkTextareaAutosize
+                          class="!resize-none !text-lg !leading-relaxed"
+                          #messageInput></textarea>
+                <mat-hint align="end" class="!text-slate-500">{{messageInput.value.length}} / 10000</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Info Box -->
+          <div class="flex gap-4 p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/10 text-indigo-200/80 text-sm leading-relaxed">
+            <mat-icon class="text-indigo-400 shrink-0">verified_user</mat-icon>
+            <p>
+              <strong class="text-indigo-300 block mb-1">Zero-Knowledge Encryption</strong>
+              Your message is encrypted locally with AES-256-GCM. The key is generated in your browser and never sent to our servers.
+            </p>
+          </div>
+
+          <!-- Action Button -->
+          <button mat-flat-button 
+                  color="primary" 
+                  type="submit" 
+                  [disabled]="messageForm.invalid || isLoading()"
+                  class="!w-full !h-14 !text-lg !rounded-xl !bg-emerald-600 hover:!bg-emerald-500 !text-white !font-medium transition-all shadow-lg shadow-emerald-900/20 disabled:!bg-slate-800 disabled:!text-slate-500">
+            <span class="flex items-center justify-center gap-2">
+              @if (isLoading()) {
+                <mat-icon class="animate-spin">sync</mat-icon> Encrypting...
+              } @else {
+                <mat-icon>link</mat-icon> Create Secure Link
+              }
+            </span>
+          </button>
+        </form>
+
+      } @else {
+        <!-- Success State -->
+        <div class="flex flex-col items-center text-center animate-fade-in">
+          
+          <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-6 ring-1 ring-emerald-500/20 shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]">
+            <mat-icon class="!w-10 !h-10 !text-[40px]">check</mat-icon>
+          </div>
+          
+          <h2 class="text-2xl font-bold text-white mb-2">Link Generated!</h2>
+          <p class="text-slate-400 mb-8 max-w-sm">
+            Share this link securely. The message will self-destruct immediately after it is opened.
+          </p>
+
+          <!-- Link Display -->
+          <div class="w-full bg-slate-950/80 p-1 rounded-xl border border-white/10 mb-8 group relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="flex items-center gap-3 p-3">
+              <mat-icon class="text-slate-600 shrink-0">link</mat-icon>
+              <a [href]="generatedLink()" target="_blank" class="flex-1 font-mono text-sm text-emerald-400 truncate hover:text-emerald-300 transition-colors select-all outline-none">
+                {{ generatedLink() }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <button mat-flat-button (click)="copyLink()" class="!h-12 !rounded-xl !bg-slate-800 hover:!bg-slate-700 !text-white border !border-white/5">
+              <mat-icon class="mr-2">content_copy</mat-icon> Copy Link
+            </button>
+            <button mat-flat-button (click)="shareLink()" class="!h-12 !rounded-xl !bg-slate-800 hover:!bg-slate-700 !text-white border !border-white/5">
+              <mat-icon class="mr-2">ios_share</mat-icon> Share
+            </button>
+          </div>
+
+          <button mat-button (click)="reset()" class="mt-8 !text-slate-500 hover:!text-slate-300">
+            Create Another Message
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-12 text-center">
+    <p class="text-slate-600 text-sm font-medium">
+      &copy; 2026 GhostLink <span class="mx-2 text-slate-700">•</span> Zero Logs <span class="mx-2 text-slate-700">•</span> Open Source
+    </p>
+  </footer>
+</div>
